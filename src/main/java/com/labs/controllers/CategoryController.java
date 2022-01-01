@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.validation.Valid;
+
+import com.labs.constants.CategoryConstant;
 import com.labs.dto.CategoryDTO;
 import com.labs.dto.ResponseData;
 import com.labs.dto.SearchDTO;
@@ -158,25 +160,25 @@ public class CategoryController {
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) throws Exception {
         ResponseData<Object> response = new ResponseData<>();
 
         if (!CSVUpload.hasCSVFormat(file)) {
             response.setStatus(false);
-            response.getMessage().add("Uploaded the file successfully!");
+            response.getMessage().add(CategoryConstant.PLEASE_UPLOAD_CSV_FILE);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        }
+        } 
         try {
             List<Category> categories = categoryService.uploadCSVFile(file);
             List<Object> objectCategory = new ArrayList<Object>(categories);
 
             response.setStatus(true);
-            response.getMessage().add("Uploaded the file successfully! " + file.getOriginalFilename());
+            response.getMessage().add(CategoryConstant.SUCCESS + file.getOriginalFilename());
             response.setData(objectCategory);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             response.setStatus(false);
-            response.getMessage().add("Could not upload the file: " + file.getOriginalFilename());
+            response.getMessage().add(CategoryConstant.FAILED + file.getOriginalFilename());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
