@@ -31,7 +31,7 @@ public class CategoryService {
         return categoryId.get();
     }
 
-    @Cacheable("categories")
+    // @Cacheable("categories")
     public Iterable<Category> findAll() {
         return categoryRepository.findAll();
     }
