@@ -7,6 +7,7 @@ import com.labs.entities.Category;
 import com.labs.repositories.CategoryRepository;
 import com.labs.utils.CSVUpload;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,6 +31,7 @@ public class CategoryService {
         return categoryId.get();
     }
 
+    @Cacheable("categories")
     public Iterable<Category> findAll() {
         return categoryRepository.findAll();
     }
