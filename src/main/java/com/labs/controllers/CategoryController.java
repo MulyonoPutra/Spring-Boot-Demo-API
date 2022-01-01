@@ -1,8 +1,8 @@
 package com.labs.controllers;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import javax.validation.Valid;
 import com.labs.dto.CategoryDTO;
 import com.labs.dto.ResponseData;
@@ -10,7 +10,6 @@ import com.labs.dto.SearchDTO;
 import com.labs.entities.Category;
 import com.labs.services.CategoryService;
 import com.labs.utils.CSVUpload;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,12 +23,12 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/categories")
@@ -160,7 +159,8 @@ public class CategoryController {
 
     @PostMapping("/upload")
     public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) {
-        ResponseData<?> response = new ResponseData<>();
+        ResponseData<Object> response = new ResponseData<>();
+
         if (!CSVUpload.hasCSVFormat(file)) {
             response.setStatus(false);
             response.getMessage().add("Uploaded the file successfully!");
@@ -168,9 +168,11 @@ public class CategoryController {
         }
         try {
             List<Category> categories = categoryService.uploadCSVFile(file);
+            List<Object> objectCategory = new ArrayList<Object>(categories);
+
             response.setStatus(true);
             response.getMessage().add("Uploaded the file successfully! " + file.getOriginalFilename());
-            response.setPayload(categories);
+            response.setData(objectCategory);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             response.setStatus(false);
