@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.validation.Valid;
-
 import com.labs.constants.CategoryConstant;
 import com.labs.dto.CategoryDTO;
 import com.labs.dto.ResponseData;
@@ -104,8 +103,9 @@ public class CategoryController {
     }
 
     @DeleteMapping("/{id}")
-    public void removeById(@PathVariable("id") Long id) {
+    public String removeById(@PathVariable("id") Long id) {
         categoryService.remove(id);
+        return "Data is removed!";
     }
 
     @PostMapping("/search/{size}/{page}")
